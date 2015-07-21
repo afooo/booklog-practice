@@ -4,6 +4,16 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var mongoose = require('mongoose');
+mongoose.connect('mongodb://booklog3:123456@ds047622.mongolab.com:47622/booklog3');
+
+mongoose.connection.on('error', function(){
+  console.log('Mongodb: connection error!');
+});
+
+mongoose.connection.on('open', function(){
+  console.log('Mongodb: connected');
+});
 
 var routes = require('./routes/index');
 var users = require('./routes/users');
