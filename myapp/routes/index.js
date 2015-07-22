@@ -7,7 +7,7 @@ router.get('/', function(req, res, next) {
 });
 
 // respond with "Hello World!" on the homepage
-router.get('/:user', function (req, res) {
+router.get('/hello/:user', function (req, res) {
   res.render('index', { title: 'Hello ' + req.params.user + '!' });
 });
 
