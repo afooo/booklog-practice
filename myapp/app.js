@@ -5,6 +5,9 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
+var session = require('express-session');
+var passport = require('passport')
+  , FacebookStrategy = require('passport-facebook').Strategy;
 
 var routes = require('./routes/index');
 var users = require('./routes/users');
@@ -36,6 +39,27 @@ app.db = {
   }
 };
 
+// passport authenticate
+
+passport.serializeUser(function(user, done) {
+  done(null, user);
+});
+
+passport.deserializeUser(function(obj, done) {
+  done(null, obj);
+});
+
+passport.use(new FacebookStrategy({
+    clientID: '410866279063864',
+    clientSecret: '3887b8914b81d0e778d3b9af10775fb6',
+    callbackURL: "http://localhost:3000/auth/facebook/callback"
+  },
+  function(accessToken, refreshToken, profile, done) {
+    return done(null, profile);
+  }
+));
+
+
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
@@ -48,9 +72,25 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+app.use(session({ secret: 'booklog-practice' }));
+app.use(passport.initialize());
+app.use(passport.session());
+
+
 app.use('/', routes);
 app.use('/', posts);
 app.use('/users', users);
+
+
+app.get('/auth/facebook', passport.authenticate('facebook'));
+
+app.get('/auth/facebook/callback',
+  passport.authenticate('facebook', { failureRedirect: '/login' }),
+  function(req, res){
+    console.log(req.user);
+    res.redirect('/');
+  });
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
