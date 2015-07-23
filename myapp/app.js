@@ -23,7 +23,7 @@ mongoose.connection.on('open', function(){
 var postSchema = new mongoose.Schema({
   title: { type: String },
   content: { type: String },
-  createdTime: { type: Date, default: Date.now }
+  createdTime: { type: Date, default: Date.now() }
 });
 
 var Post = mongoose.model('post', postSchema);
