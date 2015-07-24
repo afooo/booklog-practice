@@ -12,6 +12,7 @@ var passport = require('passport')
 var routes = require('./routes/index');
 var users = require('./routes/users');
 var posts = require('./routes/posts');
+var auth = require('./routes/auth');
 
 mongoose.connect('mongodb://booklog3:123456@ds047622.mongolab.com:47622/booklog3');
 
@@ -79,18 +80,11 @@ app.use(passport.session());
 
 app.use('/', routes);
 app.use('/', posts);
+app.use('/login', function(req, res){
+  res.render('login');
+});
+app.use('/auth', auth);
 app.use('/users', users);
-
-
-app.get('/auth/facebook', passport.authenticate('facebook'));
-
-app.get('/auth/facebook/callback',
-  passport.authenticate('facebook', { failureRedirect: '/login' }),
-  function(req, res){
-    console.log(req.user);
-    res.redirect('/');
-  });
-
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

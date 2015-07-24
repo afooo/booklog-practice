@@ -1,6 +1,12 @@
 var express = require('express');
 var router = express.Router();
 
+function ensureAuthenticated(req, res, next) {
+  if (req.isAuthenticated()) { return next(); }
+  res.redirect('/login')
+};
+
+router.get('/1/posts', ensureAuthenticated);
 router.get('/1/posts', function(req, res, next) {
 	req.app.db.model.Post.find({}, function(err, posts){
 		res.json(posts);
